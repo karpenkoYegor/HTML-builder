@@ -12,10 +12,14 @@ const path = require('path');
                 let filePath = path.join(__dirname, "secret-folder", file.name);
                 let dataFile = path.parse(filePath);
                 fs.stat(filePath, (error, stats) => {
-                    name = dataFile.name;
-                    extension = dataFile.ext;
-                    size = stats.size;
-                    console.log(`${name} - ${extension} - ${size}b`);
+                    if(error)
+                        console.log(error);
+                    else{
+                        name = dataFile.name;
+                        extension = dataFile.ext;
+                        size = stats.size;
+                        console.log(`${name} - ${extension} - ${size}b`);
+                    }
                 });
             } 
         });
