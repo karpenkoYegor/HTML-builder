@@ -124,7 +124,7 @@ fs.readdir(path.join(__dirname, "styles"), { withFileTypes: true }, (err, files)
     }
 });
 
-const copyFiles = (pathDir = path.join(__dirname,"assets")) => fs.readdir(pathDir, { withFileTypes: true }, (err, files) => {
+const copyFiles = (pathDir = path.join(__dirname,"assets"), dirName) => fs.readdir(pathDir, { withFileTypes: true }, (err, files) => {
     if(err)
         console.log(err);
     else{
@@ -132,6 +132,7 @@ const copyFiles = (pathDir = path.join(__dirname,"assets")) => fs.readdir(pathDi
             if(file.isFile()){
                 let filePath = path.join(pathDir, file.name);
                 let copyPath = path.join(__dirname, "project-dist", "assets", pathDir.slice(pathDir.lastIndexOf("\\")+1, pathDir.length), file.name);
+                
                 fs.copyFile(filePath, copyPath,(err) => {
                     if(err)
                         console.log(err);
@@ -141,11 +142,11 @@ const copyFiles = (pathDir = path.join(__dirname,"assets")) => fs.readdir(pathDi
                 fs.mkdir(path.join(__dirname,"project-dist","assets",file.name), {recursive: true}, (err) => {
                     if(err)
                         console.log("Dist created");
-                    
+                    copyFiles(path.join(__dirname, "assets", file.name), file.name);
                 });
-                copyFiles(path.join(__dirname, "assets", file.name));
+                console.log(file.name);
             }
-                
+              
         });
     }
 });
