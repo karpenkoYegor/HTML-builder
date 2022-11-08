@@ -41,7 +41,6 @@ const writeHTML = () => fs.readdir(path.join(__dirname), { withFileTypes: true }
                 name = dataFile.name;
                 extension = dataFile.ext;
                 if(name === "template" && extension === ".html"){
-                    console.log(filePath);
                     const stream = new fs.ReadStream(filePath, { encoding: "utf-8" });
                 
                     stream.on("readable", function(){
@@ -132,12 +131,11 @@ const copyFiles = (pathDir = path.join(__dirname,"assets")) => fs.readdir(pathDi
         files.forEach(file => {
             if(file.isFile()){
                 let filePath = path.join(pathDir, file.name);
-                console.log(pathDir,pathDir.slice(pathDir.lastIndexOf("\\"), pathDir.length));
                 let copyPath = path.join(__dirname, "project-dist", "assets", pathDir.slice(pathDir.lastIndexOf("\\")+1, pathDir.length), file.name);
                 fs.copyFile(filePath, copyPath,(err) => {
                     if(err)
                         console.log(err);
-                })
+                });
             }
             else{
                 fs.mkdir(path.join(__dirname,"project-dist","assets",file.name), {recursive: true}, (err) => {

@@ -28,7 +28,6 @@ fs.readdir(path.join(__dirname,"styles"), { withFileTypes: true }, (err, files) 
                                 throw err;
                             }
                         });
-                        console.log(path.join(__dirname, "project-dist", "bundle.css"));
                         stream.destroy();
                     });
                     

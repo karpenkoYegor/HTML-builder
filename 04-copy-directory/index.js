@@ -15,7 +15,6 @@ const checkFolder = () => {
                     while(files.length > 0){
                         let file = files.pop();
                         let filePath = path.join(__dirname, "files-copy", file);
-                        console.log(__dirname, "files-copy", file);
                         fs.unlink(filePath, (err) => {
                             if(err)
                                 console.log(err);
