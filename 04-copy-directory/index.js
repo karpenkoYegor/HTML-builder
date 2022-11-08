@@ -4,8 +4,7 @@ const checkFolder = () => {
     fs.access(path.join(__dirname,"files-copy"), fs.constants.F_OK, (err) => {
         if(err){
             fs.mkdir(path.join(__dirname,"files-copy"), (err) => {
-                if(err)
-                    copyFiles();
+                copyFiles();
             });
         }
         else{
