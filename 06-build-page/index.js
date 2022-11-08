@@ -3,20 +3,31 @@ const path = require('path');
 
 let html = {};
 template = ""
+let about = false;
+fs.mkdir(path.join(__dirname,"project-dist"), {recursive: true}, (err) => {
+    if(err)
+        console.log("Dist created");
+    else
+        fs.mkdir(path.join(__dirname,"project-dist", "assets"), {recursive: true}, (err) => {
+            if(err)
+                console.log("Dist created");
+            
+        });
+});
 
-fs.writeFile(path.join(__dirname, "style.css"), "", (err) =>{
+fs.writeFile(path.join(__dirname,"project-dist", "style.css"), "", (err) =>{
     if(err){
         throw err;
     }
 });
 
-fs.writeFile(path.join(__dirname, "index.html"), "", (err) =>{
+fs.writeFile(path.join(__dirname, "project-dist", "index.html"), "", (err) =>{
     if(err){
         throw err;
     }
 });
 
-fs.readdir(path.join(__dirname), { withFileTypes: true }, (err, files) => {
+const writeHTML = () => fs.readdir(path.join(__dirname), { withFileTypes: true }, (err, files) => {
     if(err)
         console.log(err);
     else
@@ -40,8 +51,10 @@ fs.readdir(path.join(__dirname), { withFileTypes: true }, (err, files) => {
                         template=template.replace("{{header}}", html["header"]);
                         template=template.replace("{{articles}}", html["articles"]);
                         template=template.replace("{{footer}}", html["footer"]);
-                        console.log(template);
-                        fs.appendFile(path.join(__dirname, "index.html"), `${template}\n`, (err) =>{
+                        if(about){
+                            template=template.replace("{{about}}", html["about"]);
+                        }
+                        fs.appendFile(path.join(__dirname, "project-dist", "index.html"), `${template}\n`, (err) =>{
                             if(err){
                                 throw err;
                             }
@@ -71,11 +84,14 @@ fs.readdir(path.join(__dirname, "components"), { withFileTypes: true }, (err, fi
                     stream.on("readable", function(){
                         let data = stream.read();
                         html[name] = data;
+                        if(name === "about")
+                            about = true;
                         stream.destroy();
                     });
                 }
             }
         });
+        writeHTML();
     }
 });
 fs.readdir(path.join(__dirname, "styles"), { withFileTypes: true }, (err, files) => {
@@ -96,7 +112,7 @@ fs.readdir(path.join(__dirname, "styles"), { withFileTypes: true }, (err, files)
                 
                     stream.on("readable", function(){
                         let data = stream.read();
-                        fs.appendFile(path.join(__dirname, "style.css"), `${data}\n`, (err) =>{
+                        fs.appendFile(path.join(__dirname, "project-dist", "style.css"), `${data}\n`, (err) =>{
                             if(err){
                                 throw err;
                             }
@@ -108,3 +124,31 @@ fs.readdir(path.join(__dirname, "styles"), { withFileTypes: true }, (err, files)
         });
     }
 });
+
+const copyFiles = (pathDir = path.join(__dirname,"assets")) => fs.readdir(pathDir, { withFileTypes: true }, (err, files) => {
+    if(err)
+        console.log(err);
+    else{
+        files.forEach(file => {
+            if(file.isFile()){
+                let filePath = path.join(pathDir, file.name);
+                console.log(pathDir,pathDir.slice(pathDir.lastIndexOf("\\"), pathDir.length));
+                let copyPath = path.join(__dirname, "project-dist", "assets", pathDir.slice(pathDir.lastIndexOf("\\")+1, pathDir.length), file.name);
+                fs.copyFile(filePath, copyPath,(err) => {
+                    if(err)
+                        console.log(err);
+                })
+            }
+            else{
+                fs.mkdir(path.join(__dirname,"project-dist","assets",file.name), {recursive: true}, (err) => {
+                    if(err)
+                        console.log("Dist created");
+                    
+                });
+                copyFiles(path.join(__dirname, "assets", file.name));
+            }
+                
+        });
+    }
+});
+copyFiles();
