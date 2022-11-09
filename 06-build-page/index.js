@@ -11,17 +11,18 @@ fs.mkdir(path.join(__dirname,"project-dist"), {recursive: true}, (err) => {
         fs.mkdir(path.join(__dirname,"project-dist", "assets"), {recursive: true}, (err) => {
             if(err)
                 console.log("Dist created");
-            
         });
+    createHTMLFile();
+    createCSSFile();
 });
 
-fs.writeFile(path.join(__dirname,"project-dist", "style.css"), "", (err) =>{
+let createHTMLFile = () => fs.writeFile(path.join(__dirname,"project-dist", "style.css"), "", (err) =>{
     if(err){
         throw err;
     }
 });
 
-fs.writeFile(path.join(__dirname, "project-dist", "index.html"), "", (err) =>{
+let createCSSFile = () => fs.writeFile(path.join(__dirname, "project-dist", "index.html"), "", (err) =>{
     if(err){
         throw err;
     }
@@ -42,7 +43,6 @@ const writeHTML = () => fs.readdir(path.join(__dirname), { withFileTypes: true }
                 extension = dataFile.ext;
                 if(name === "template" && extension === ".html"){
                     const stream = new fs.ReadStream(filePath, { encoding: "utf-8" });
-                
                     stream.on("readable", function(){
                         let data = stream.read();
                         template = data;
