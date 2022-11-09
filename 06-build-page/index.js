@@ -131,7 +131,7 @@ const copyFiles = (pathDir = path.join(__dirname,"assets"), dirName) => fs.readd
         files.forEach(file => {
             if(file.isFile()){
                 let filePath = path.join(pathDir, file.name);
-                let copyPath = path.join(__dirname, "project-dist", "assets", pathDir.slice(pathDir.lastIndexOf("\\")+1, pathDir.length), file.name);
+                let copyPath = path.join(__dirname, "project-dist", "assets", dirName, file.name);
                 
                 fs.copyFile(filePath, copyPath,(err) => {
                     if(err)
@@ -139,7 +139,7 @@ const copyFiles = (pathDir = path.join(__dirname,"assets"), dirName) => fs.readd
                 });
             }
             else{
-                fs.mkdir(path.join(__dirname,"project-dist","assets",file.name), {recursive: true}, (err) => {
+                fs.mkdir(path.join(__dirname,"project-dist", "assets", file.name), {recursive: true}, (err) => {
                     if(err)
                         console.log("Dist created");
                     copyFiles(path.join(__dirname, "assets", file.name), file.name);
